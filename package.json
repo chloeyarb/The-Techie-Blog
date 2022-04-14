@@ -2,9 +2,10 @@
   "name": "the-techie-blog",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/chloeyarb/The-Techie-Blog/issues"
   },
-  "homepage": "https://github.com/chloeyarb/The-Techie-Blog#readme"
+  "homepage": "https://github.com/chloeyarb/The-Techie-Blog#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.19.0"
+  }
 }
