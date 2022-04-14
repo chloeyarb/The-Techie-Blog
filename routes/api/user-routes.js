@@ -65,7 +65,22 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-
-})
+    User.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(UserData => {
+        if(!UserData) {
+            res.status(404).json({ message: 'User not found'});
+            return;
+        }
+        res.json(UserData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
 
 module.exports = router;
