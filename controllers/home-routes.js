@@ -29,14 +29,22 @@ router.get('/', (req, res) => {
             }
         ]
     })
-    .then(postData => {
-        const posts = postData.map(post => post.get({plain: true}));
-        res.render('homage', {posts, loggedIn: req.session.loggedIn});
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(postData => {
+            const posts = postData.map(post => post.get({ plain: true }));
+            res.render('homage', { posts, loggedIn: req.session.loggedIn });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+router.get('/signup', (req, res) => {
+    res.render('signup');
 });
 
 module.exports = router;
