@@ -21,7 +21,7 @@ router.get('/:id', (req, res) => {
         include: [
             {
                 model: Post,
-                attributes: ['id', 'title', 'post_url', 'created_at']
+                attributes: ['id', 'title', 'post_content', 'created_at']
             },
             {
                 model: Comment,
@@ -52,7 +52,15 @@ router.post('/', (req, res) => {
         email: req.body.email,
         password: req.body.password
     })
-    .then(UserData => res.json(UserData))
+    .then(UserData => {
+        req.session.save(() => {
+            req.session.user_id = UserData.id;
+            req.session.username = UserData.username;
+            req.session.loggedIn = true;
+
+            res.json(UserData);
+        })
+    })
     .catch(err => {
         console.log(err),
         res.status(500).json(err);
