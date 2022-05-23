@@ -17,10 +17,44 @@ router.get('/', withAuth, (req, res) => {
             'created_at'
         ],
         include: [{
-            model: Comment, 
+            model: Comment,
             attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
             include: {
-                model: User, 
+                model: User,
+                attributes: ['username']
+            }
+        },
+        {
+            model: User,
+            attributes: ['username']
+        }]
+    })
+        .then(PostData => {
+            const posts = PostData.map(post => post.get({ plain: true }));
+            res.render('dashboard', { posts, loggenIn: true });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
+});
+
+router.get('/edit/:id', withAuth, (req, res) => {
+    Post.findOne({
+        where: {
+            id: req.params.id
+        },
+        attributes: [
+            'id',
+            'title',
+            'post_content',
+            'created_at'
+        ],
+        include: [{
+            model: Comment,
+            attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+            include: {
+                model: User,
                 attributes: ['username']
             }
         },
@@ -30,7 +64,26 @@ router.get('/', withAuth, (req, res) => {
         }]
     })
     .then(PostData => {
-        const posts = PostData.map(post => post.get({ plain: true }));
-        res.render('dashboard', { posts, loggenIn: true });
+        if (PostData) {
+            const post = PostData.get({ plain: true });
+            res.render('edit-post', {
+                post, 
+                loggedIn: true
+            });
+        } else {
+            res.status(404).end();
+        }
+    })
+    .catch(err => {
+        res.status(500).json(err);
     });
 });
+
+router.get('/new', (req,res) => {
+    res.render('new-post', {
+        loggedIn: true
+    })
+})
+
+module.exports = router;
+
