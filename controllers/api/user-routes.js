@@ -67,6 +67,43 @@ router.post('/', (req, res) => {
     });
 });
 
+router.post('/login', (req, res) => {
+    User.findOne({
+        where: {
+            username: req.body.username
+        }
+    })
+    .then(UserData => {
+        if(!UserData) {
+            res.status(400).json({message: 'Username not found.'});
+            return;
+        }
+        const validPassword = UserData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res.status(404).json({message: 'Invalid password.'});
+            return;
+        }
+        req.session.save(() => {
+            req.session.user_id = UserData.id;
+            req.session.username = UserData.username;
+            req.session.loggedIn = true;
+
+            res.json({user: UserData, message: 'You are logged in.'});
+        });
+    });
+});
+
+router.post('/logout', (req, res) => {
+    if (req.session.loggedIn) {
+        req.session.destroy(()=> {
+            res.status(204).end();
+        });
+    }
+    else {
+        res.status(404).end();
+    }
+});
+
 router.put('/:id', (req, res) => {
     User.update(req.body, {
         individualHooks: true,

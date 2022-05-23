@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Post, User, Comment } = require('../../models');
+const withAuth = require('../../utils/auth');
 
 router.get('/', (req, res) => {
     Post.findAll({
@@ -19,12 +20,12 @@ router.get('/', (req, res) => {
             }
         ]
     })
-    // the Promise that captures the response from the database call
-    .then(PostData => res.json(PostData))
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        // the Promise that captures the response from the database call
+        .then(PostData => res.json(PostData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 })
 
 router.get('/:id', (req, res) => {
@@ -48,73 +49,73 @@ router.get('/:id', (req, res) => {
             }
         ]
     })
-    .then(PostData => {
-        if (!PostData) {
-            res.status(404).json({ message: 'Post not found.'});
-            return;
-        }
-        res.json(PostData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(PostData => {
+            if (!PostData) {
+                res.status(404).json({ message: 'Post not found.' });
+                return;
+            }
+            res.json(PostData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
     Post.create({
         title: req.body.title,
         post_content: req.body.post_content,
         user_id: req.body.user_id
     })
-    .then(PostData => res.json(PostData))
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(PostData => res.json(PostData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
-router.put('/:id', (req, res) => {
-    Post.update( 
+router.put('/:id', withAuth, (req, res) => {
+    Post.update(
         {
-            title: req.body.title
+            title: req.body.title,
+            post_content: req.body.post_content
         },
         {
             where: {
                 id: req.params.id
             }
-        }
-    )
-    .then(PostData => {
-        if (!PostData) {
-            res.status(404).json({ message: 'No post found.' });
-            return;
-        }
-        res.json(PostData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        })
+        .then(PostData => {
+            if (!PostData) {
+                res.status(404).json({ message: 'No post found.' });
+                return;
+            }
+            res.json(PostData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
-router.delete('/:id', (req, res) =>{
+router.delete('/:id',withAuth, (req, res) => {
     Post.destroy({
         where: {
             id: req.params.id
         }
     })
-    .then(PostData => {
-        if (!PostData) {
-            res.status(404).json({ message: 'Post not found.' });
-            return;
-        }
-        res.json(PostData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(PostData => {
+            if (!PostData) {
+                res.status(404).json({ message: 'No post found.' });
+                return;
+            }
+            res.json(PostData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 module.exports = router;
