@@ -20,4 +20,4 @@ async function newFormHandler(event) {
         alert(response.statusText);
     }
 }
-document.query('.new-post').addEventListner('submit', newFormHandler);
+document.querySelector('.new-post').addEventListener('submit', newFormHandler);
