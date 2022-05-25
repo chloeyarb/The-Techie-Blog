@@ -1,3 +1,7 @@
+<div>
+    <a href="/dashboard"> &larr; Back to Dashboard</a>
+</div>
+
 {{> post-info post}}
 
 {{#if loggedIn}}
@@ -11,7 +15,8 @@
 </form>
 {{/if}}
 
-{{> comments posts.comments}}
+{{> comments post.comments}}
 
 {{#if loggedIn}}
 <script src="/javascript/comment.js"></script>
+{{/if}}
